@@ -1,0 +1,51 @@
+{
+    "name": "khqr-gateway/bakong-khqr-php",
+    "description": "A pure PHP implementation of the Bakong KHQR SDK",
+    "type": "library",
+    "keywords": [
+        "bakong",
+        "khqr"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Force Fidele KIEN",
+            "email": "forcefidele@gmail.com",
+            "homepage": "https://fidele007.github.io",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/fidele007/bakong-khqr-php/issues"
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://www.github.com/sponsors/fidele007"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "KHQR\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "KHQR\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        },
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "classmap-authoritative": true,
+        "process-timeout": 900
+    }
+}
