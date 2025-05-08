@@ -7,7 +7,7 @@ This is a complete implementation of the [`bakong-khqr`](https://www.npmjs.com/p
 ## Installation
 
 ```shell
-composer require extlib-khqr/bakong-khqr-php
+composer require khqr-gateway/bakong-khqr-php
 ```
 
 ## Usage
