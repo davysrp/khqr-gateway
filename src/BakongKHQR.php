@@ -145,7 +145,7 @@ class BakongKHQR
     public static function verify(string $KHQRString): CRCValidation
     {
         $isCorrectFormCRC = Utils::checkCRCRegExp($KHQRString);
-        if (! $isCorrectFormCRC) {
+        if (!$isCorrectFormCRC) {
             return new CRCValidation(false);
         }
 
@@ -155,7 +155,7 @@ class BakongKHQR
         $isValidCRC = new CRCValidation($validCRC);
 
         try {
-            if (! $isValidCRC->isValid || strlen($KHQRString) < EMV::INVALID_LENGTH_KHQR) {
+            if (!$isValidCRC->isValid || strlen($KHQRString) < EMV::INVALID_LENGTH_KHQR) {
                 throw new KHQRException(KHQRException::KHQR_INVALID);
             }
 
@@ -172,20 +172,22 @@ class BakongKHQR
     public static function generateDeepLinkWithUrl(string $url, string $qr, ?SourceInfo $sourceInfo): KHQRResponse
     {
         // Check if URL is valid
-        if (! DeepLink::isValidLink($url)) {
+        if (!DeepLink::isValidLink($url)) {
             throw new KHQRException(KHQRException::INVALID_DEEP_LINK_URL);
         }
 
         // Validate QR (CRC check)
         $isValidKHQR = self::verify($qr);
-        if (! $isValidKHQR->isValid) {
+        if (!$isValidKHQR->isValid) {
             throw new KHQRException(KHQRException::KHQR_INVALID);
         }
 
         // Validate sourceInfo fields if provided
-        if ($sourceInfo && ($sourceInfo->appIconUrl === null || $sourceInfo->appIconUrl === '' || $sourceInfo->appIconUrl === '0' ||
-            ($sourceInfo->appName === null || $sourceInfo->appName === '' || $sourceInfo->appName === '0') ||
-            ($sourceInfo->appDeepLinkCallback === null || $sourceInfo->appDeepLinkCallback === '' || $sourceInfo->appDeepLinkCallback === '0'))) {
+        if (
+            $sourceInfo && ($sourceInfo->appIconUrl === null || $sourceInfo->appIconUrl === '' || $sourceInfo->appIconUrl === '0' ||
+                ($sourceInfo->appName === null || $sourceInfo->appName === '' || $sourceInfo->appName === '0') ||
+                ($sourceInfo->appDeepLinkCallback === null || $sourceInfo->appDeepLinkCallback === '' || $sourceInfo->appDeepLinkCallback === '0'))
+        ) {
             throw new KHQRException(KHQRException::INVALID_DEEP_LINK_SOURCE_INFO);
         }
         // Call API to generate deep link
@@ -233,9 +235,9 @@ class BakongKHQR
      */
     private static function decodeKHQRValidation(string $khqrString): array
     {
-        $allField = array_map(fn ($el): string => $el['tag'], KHQRData::KHQRTag);
-        $subtag = array_map(fn ($obj): string => $obj['tag'], array_filter(KHQRData::KHQRTag, fn ($el): bool => isset($el['sub']) && $el['sub']));
-        $requiredField = array_map(fn ($el): string => $el['tag'], array_filter(KHQRData::KHQRTag, fn ($el): bool => $el['required'] == true));
+        $allField = array_map(fn($el): string => $el['tag'], KHQRData::KHQRTag);
+        $subtag = array_map(fn($obj): string => $obj['tag'], array_filter(KHQRData::KHQRTag, fn($el): bool => isset($el['sub']) && $el['sub']));
+        $requiredField = array_map(fn($el): string => $el['tag'], array_filter(KHQRData::KHQRTag, fn($el): bool => $el['required'] == true));
         $subTagInput = KHQRData::KHQRSubtag['input'];
         $subTagCompare = KHQRData::KHQRSubtag['compare'];
 
@@ -262,7 +264,7 @@ class BakongKHQR
 
             if (in_array($tag, $allField)) {
                 $tags[] = ['tag' => $tag, 'value' => $value];
-                $requiredField = array_filter($requiredField, fn ($el): bool => $el != $tag);
+                $requiredField = array_filter($requiredField, fn($el): bool => $el != $tag);
             }
 
             $khqrString = $slicedString;
@@ -281,14 +283,14 @@ class BakongKHQR
         ];
 
         foreach (
-            array_map(fn ($el): array => $el['data'], $subTagInput) as $obj
+            array_map(fn($el): array => $el['data'], $subTagInput) as $obj
         ) {
             $decodeValue = array_merge($decodeValue, $obj);
         }
 
         foreach ($tags as $khqrTag) {
             $tag = $khqrTag['tag'];
-            $khqr = current(array_filter(KHQRData::KHQRTag, fn ($el): bool => $el['tag'] == $tag));
+            $khqr = current(array_filter(KHQRData::KHQRTag, fn($el): bool => $el['tag'] == $tag));
             assert($khqr !== false);
 
             if ($khqr['instance'] === Timestamp::class) {
@@ -309,7 +311,7 @@ class BakongKHQR
                     $subtagValue = $cutsubstring['value'];
                     $slicedSubtag = $cutsubstring['slicedString'];
 
-                    $nameSubtag = current(array_filter($subTagCompare, fn ($el): bool => $el['tag'] == $tag && $el['subTag'] == $tempSubtag));
+                    $nameSubtag = current(array_filter($subTagCompare, fn($el): bool => $el['tag'] == $tag && $el['subTag'] == $tempSubtag));
 
                     if ($nameSubtag) {
                         $nameSubtag = $nameSubtag['name'];
@@ -355,9 +357,9 @@ class BakongKHQR
      */
     private static function decodeKHQRString(string $khqrString): array
     {
-        $allField = array_map(fn ($el): string => $el['tag'], KHQRData::KHQRTag);
-        $subtag = array_map(fn ($obj): string => $obj['tag'], array_filter(KHQRData::KHQRTag, fn ($el): bool => isset($el['sub']) && $el['sub']));
-        $requiredField = array_map(fn ($el): string => $el['tag'], array_filter(KHQRData::KHQRTag, fn ($el): bool => $el['required'] == true));
+        $allField = array_map(fn($el): string => $el['tag'], KHQRData::KHQRTag);
+        $subtag = array_map(fn($obj): string => $obj['tag'], array_filter(KHQRData::KHQRTag, fn($el): bool => isset($el['sub']) && $el['sub']));
+        $requiredField = array_map(fn($el): string => $el['tag'], array_filter(KHQRData::KHQRTag, fn($el): bool => $el['required'] == true));
 
         $subTagInput = KHQRData::KHQRSubtag['input'];
         $subTagCompare = KHQRData::KHQRSubtag['compare'];
@@ -388,7 +390,7 @@ class BakongKHQR
 
             if (in_array($tag, $allField)) {
                 $tags[$tag] = $value;
-                $requiredField = array_filter($requiredField, fn ($el): bool => $el != $tag);
+                $requiredField = array_filter($requiredField, fn($el): bool => $el != $tag);
             }
 
             $khqrString = $slicedString;
@@ -403,7 +405,7 @@ class BakongKHQR
 
         foreach (KHQRData::KHQRTag as $khqrTag) {
             $tag = $khqrTag['tag'];
-            $khqr = current(array_filter(KHQRData::KHQRTag, fn ($el): bool => $el['tag'] === $tag));
+            $khqr = current(array_filter(KHQRData::KHQRTag, fn($el): bool => $el['tag'] === $tag));
             assert($khqr !== false);
 
             $value = $tags[$tag] ?? null;
@@ -417,7 +419,7 @@ class BakongKHQR
                     $subtagValue = $cutsubstring['value'];
                     $slicedSubtag = $cutsubstring['slicedString'];
 
-                    $nameSubtag = current(array_filter($subTagCompare, fn ($el): bool => $el['tag'] === $tag && $el['subTag'] == $tempSubtag));
+                    $nameSubtag = current(array_filter($subTagCompare, fn($el): bool => $el['tag'] === $tag && $el['subTag'] == $tempSubtag));
 
                     if ($nameSubtag) {
                         $nameSubtag = $nameSubtag['name'];
@@ -478,10 +480,10 @@ class BakongKHQR
         $amount = $info->amount;
         $payloadFormatIndicator = new PayloadFormatIndicator(EMV::PAYLOAD_FORMAT_INDICATOR, EMV::DEFAULT_PAYLOAD_FORMAT_INDICATOR);
         $QRType = EMV::DYNAMIC_QR;
-        if (! isset($amount) || $amount == 0) {
+        if (!isset($amount) || $amount == 0) {
             $QRType = EMV::STATIC_QR;
         }
-        $pointOfInitiationMethod = new PointOfInitiationMethod(EMV::POINT_OF_INITIATION_METHOD, $QRType);
+        $pointOfInitiationMethod = $QRType;
         $upi = null;
         if ($info->upiMerchantAccount !== null && $info->upiMerchantAccount !== '' && $info->upiMerchantAccount !== '0') {
             $upi = new UnionpayMerchantAccount(EMV::UNIONPAY_MERCHANT_ACCOUNT, $info->upiMerchantAccount);
@@ -540,15 +542,26 @@ class BakongKHQR
             $languageTemplate = new MerchantInformationLanguageTemplate(EMV::MERCHANT_INFORMATION_LANGUAGE_TEMPLATE, $languageInformation);
             $KHQRInstances[] = $languageTemplate;
         }
-        $timeStamp = new Timestamp(EMV::TIMESTAMP_TAG);
+
+
+        $emvConfig = new EMV();
+        $timeStamp = new Timestamp(EMV::TIMESTAMP_TAG, $emvConfig);
+
+        // check Qr is Dynamic or Static before add expired time
+        if ($QRType == EMV::STATIC_QR) {
+            $KHQRInstances[] = $timeStamp->value(true, 1);
+
+        } else {
+            $KHQRInstances[] = $timeStamp->value(false, 1);
+        }
         $KHQRInstances[] = $timeStamp;
         $khqrNoCrc = '';
         foreach ($KHQRInstances as $instance) {
             $khqrNoCrc .= (string) $instance;
         }
-        $khqr = $khqrNoCrc.EMV::CRC.EMV::CRC_LENGTH;
+        $khqr = $khqrNoCrc . EMV::CRC . EMV::CRC_LENGTH;
 
-        return $khqr.Utils::crc16($khqr);
+        return $khqr . Utils::crc16($khqr);
     }
 
     public static function isExpiredToken(string $token): bool
